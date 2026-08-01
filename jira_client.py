@@ -89,7 +89,3 @@ def transition_ticket(ticket_key: str, new_status: str) -> None:
         )
 
         response.raise_for_status()
-
-
-if __name__ == "__main__":
-    print(transition_ticket("AUT-1", "In Progress"))
