@@ -1,5 +1,4 @@
 from models import Ticket
-import asyncio
 from claude_agent_sdk import query, ClaudeAgentOptions
 from github_client import _resolve_path
 from dotenv import load_dotenv
