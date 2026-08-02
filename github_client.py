@@ -1,11 +1,14 @@
 import os
 import subprocess
 from pathlib import Path
-
 import httpx
 from dotenv import load_dotenv
 
 load_dotenv()
+
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+GITHUB_OWNER = os.getenv("GITHUB_OWNER")
+GITHUB_REPO = os.getenv("GITHUB_REPO")
 
 
 def _resolve_path(local_path: str) -> str:
@@ -99,11 +102,6 @@ def commit_and_push(local_path: str, branch_name: str, message: str) -> None:
     )
 
 
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-GITHUB_OWNER = os.getenv("GITHUB_OWNER")
-GITHUB_REPO = os.getenv("GITHUB_REPO")
-
-
 def get_github_client() -> httpx.Client:
     if not GITHUB_TOKEN:
         raise ValueError("GITHUB_TOKEN must be set in .env")
@@ -116,6 +114,13 @@ def get_github_client() -> httpx.Client:
             "X-GitHub-Api-Version": "2026-03-10",
         },
     )
+
+
+def _validate_github_config() -> None:
+    if not GITHUB_OWNER or not GITHUB_REPO:
+        raise ValueError(
+            "GITHUB_OWNER and GITHUB_REPO must be set in .env"
+        )
 
 
 def create_pull_request(
@@ -138,13 +143,6 @@ def create_pull_request(
 
         response.raise_for_status()
         return response.json()
-
-
-def _validate_github_config() -> None:
-    if not GITHUB_OWNER or not GITHUB_REPO:
-        raise ValueError(
-            "GITHUB_OWNER and GITHUB_REPO must be set in .env"
-        )
 
 
 def get_pr_comments(pr_number: int) -> list[dict]:
