@@ -1,8 +1,9 @@
 from typing import TypedDict
-from review_agent import get_diff, run_review_agent
+
 import coding_agent
 import github_client
-from models import Ticket, ReviewResult
+from models import ReviewResult, Ticket
+from review_agent import get_diff, run_review_agent
 
 
 class PipelineState(TypedDict):
@@ -37,7 +38,7 @@ def route_after_review(state: PipelineState) -> str:
     return "give_up"
 
 
-from langgraph.graph import StateGraph, START, END
+from langgraph.graph import END, START, StateGraph
 
 builder = StateGraph(PipelineState)
 builder.add_node("code", code_node)

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+    <h1>Settings</h1>
+</div>
+
+{% if saved %}
+<div class="banner banner-success">Settings saved. Restart the dashboard process for the new values to take effect.</div>
+{% endif %}
+
+{% if has_errors %}
+<div class="banner banner-error">Some values look wrong. Fix the highlighted fields below and save again — nothing was written yet.</div>
+{% endif %}
+
+<form method="post" action="/settings" class="settings-form">
+    {% for group_name, group_fields in groups.items() %}
+    <div class="settings-card">
+        <h3>{{ group_name }}</h3>
+        {% for field in group_fields %}
+        <label class="settings-field">
+            <span>{{ field.label }}</span>
+            {% if field.is_secret %}
+            <div class="secret-input">
+                <input
+                    type="password"
+                    id="field-{{ field.key }}"
+                    name="{{ field.key }}"
+                    value="{{ field.value }}"
+                    autocomplete="off"
+                    placeholder="{{ field.key }}"
+                    onfocus="this.select()"
+                    class="{{ 'field-invalid' if field.error else '' }}"
+                >
+                <button type="button" class="secret-toggle" onclick="toggleSecret('field-{{ field.key }}', this)" aria-label="Show value">&#128065;</button>
+            </div>
+            {% else %}
+            <input
+                type="text"
+                name="{{ field.key }}"
+                value="{{ field.value }}"
+                autocomplete="off"
+                placeholder="{{ field.key }}"
+                onfocus="this.select()"
+                class="{{ 'field-invalid' if field.error else '' }}"
+            >
+            {% endif %}
+            {% if field.error %}
+            <span class="field-error">{{ field.error }}</span>
+            {% endif %}
+        </label>
+        {% endfor %}
+    </div>
+    {% endfor %}
+
+    <div class="settings-actions">
+        <button type="submit" class="btn-primary">Save Changes</button>
+    </div>
+</form>
+{% endblock %}

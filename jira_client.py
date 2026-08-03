@@ -1,6 +1,8 @@
-from dotenv import load_dotenv
-import httpx
 import os
+
+import httpx
+from dotenv import load_dotenv
+
 from models import Ticket
 
 load_dotenv()

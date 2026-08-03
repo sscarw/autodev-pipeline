@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+jinja2
+python-multipart
+httpx
+pydantic
+python-dotenv
+openai-agents
+langgraph
+claude-agent-sdk
+
+# dev / testing
+pytest
+ruff
