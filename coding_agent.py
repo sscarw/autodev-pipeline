@@ -27,16 +27,24 @@ def extract_text_from_adf(description: dict | None) -> str:
     return ""
 
 
-def build_prompt(ticket: Ticket) -> str:
+def build_prompt(ticket: Ticket, extra_instructions: str = "") -> str:
     description = extract_text_from_adf(ticket.description)
 
-    return (
+    prompt = (
         f"Implement the following task: {ticket.summary}. "
         f"Details: {description}"
     )
 
+    if extra_instructions:
+        prompt += (
+            "\n\nReviewer feedback to address:\n"
+            f"{extra_instructions}"
+        )
 
-async def run_coding_agent(ticket: Ticket, local_path: str) -> None:
+    return prompt
+
+
+async def run_coding_agent(ticket: Ticket, local_path: str, extra_instructions: str = "") -> None:
     options = ClaudeAgentOptions(
         cwd=_resolve_path(local_path),
         allowed_tools=["Read", "Write", "Edit", "Bash"],
@@ -44,7 +52,7 @@ async def run_coding_agent(ticket: Ticket, local_path: str) -> None:
     )
 
     async for message in query(
-            prompt=build_prompt(ticket),
+            prompt=build_prompt(ticket, extra_instructions),
             options=options,
     ):
         if hasattr(message, "result"):

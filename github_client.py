@@ -171,3 +171,14 @@ def post_pr_comment(pr_number: int, body: str) -> None:
         )
 
         response.raise_for_status()
+
+
+def is_pr_merged(pr_number: int) -> bool:
+    _validate_github_config()
+    with get_github_client() as client:
+        response = client.get(
+            f"/repos/{GITHUB_OWNER}/{GITHUB_REPO}"
+            f"/pulls/{pr_number}"
+        )
+        response.raise_for_status()
+        return response.json()["merged"]
