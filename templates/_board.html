@@ -1,0 +1,42 @@
+<div class="board" id="board">
+    {% for stage in stages %}
+    <div class="column">
+        <div class="column-header">
+            <span class="stage-dot stage-{{ stage|replace(' ', '-')|lower }}"></span>
+            <span class="column-title">{{ stage }}</span>
+            <span class="column-count">{{ board[stage]|length }}</span>
+        </div>
+        <div class="column-cards">
+            {% for ticket in board[stage] %}
+            <button class="ticket-card" data-key="{{ ticket.key }}" onclick="openTicket('{{ ticket.key }}')">
+                <div class="ticket-key">{{ ticket.key }}</div>
+                <div class="ticket-summary">{{ ticket.summary }}</div>
+                {% if ticket.last_message %}
+                <div class="ticket-meta">{{ ticket.last_message }}</div>
+                {% endif %}
+            </button>
+            {% else %}
+            <div class="column-empty">No tickets</div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="feed-panel">
+    <div class="feed-header">
+        <span class="live-dot"></span>
+        <span>Live activity</span>
+    </div>
+    <div class="feed-list" id="feed">
+        {% for event in feed %}
+        <div class="feed-item">
+            <span class="feed-time">{{ event.timestamp[11:19] }}</span>
+            <span class="feed-ticket">{{ event.ticket_key }}</span>
+            <span class="feed-message">{{ event.message }}</span>
+        </div>
+        {% else %}
+        <div class="feed-empty">No pipeline activity yet. Run the driver to see live events here.</div>
+        {% endfor %}
+    </div>
+</div>

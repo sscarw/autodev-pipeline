@@ -1,0 +1,68 @@
+<div class="detail-header">
+    <div>
+        <div class="detail-key">{{ ticket.key }}</div>
+        <h2 class="detail-summary">{{ ticket.summary }}</h2>
+        {% if ticket.stage %}
+        <span class="stage-badge stage-{{ ticket.stage|replace(' ', '-')|lower }}">{{ ticket.stage }}</span>
+        {% endif %}
+    </div>
+    <button class="detail-close" onclick="closeTicket()">&times;</button>
+</div>
+
+<div class="detail-links">
+    {% if ticket.pr_url %}
+    <a class="detail-link" href="{{ ticket.pr_url }}" target="_blank" rel="noopener">Open GitHub PR{% if ticket.pr_number %} #{{ ticket.pr_number }}{% endif %}</a>
+    {% endif %}
+    {% if ticket.jira_url %}
+    <a class="detail-link" href="{{ ticket.jira_url }}" target="_blank" rel="noopener">Open Jira Ticket</a>
+    {% endif %}
+</div>
+
+<div class="detail-section">
+    <h3>Code changes</h3>
+    {% if ticket.diff_lines %}
+    <pre class="diff-block">{% for css_class, line in ticket.diff_lines %}<span class="{{ css_class }}">{{ line }}</span>
+{% endfor %}</pre>
+    {% else %}
+    <div class="section-empty">No diff recorded yet for this ticket.</div>
+    {% endif %}
+</div>
+
+<div class="detail-section">
+    <h3>Review attempts</h3>
+    {% if ticket.attempts %}
+    {% for attempt in ticket.attempts %}
+    <div class="attempt-card">
+        <div class="attempt-header">
+            <span class="verdict-badge verdict-{{ attempt.verdict }}">{{ attempt.verdict }}</span>
+            <span class="attempt-time">{{ attempt.timestamp[11:19] }}</span>
+        </div>
+        <p class="attempt-summary">{{ attempt.summary }}</p>
+        {% if attempt.comments %}
+        <ul class="attempt-comments">
+            {% for comment in attempt.comments %}
+            <li>{{ comment }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="section-empty">No auto-review attempts recorded yet.</div>
+    {% endif %}
+</div>
+
+<div class="detail-section">
+    <h3>Reviewer conversation</h3>
+    {% if ticket.comments %}
+    {% for comment in ticket.comments %}
+    <div class="comment-bubble comment-{{ comment.role }}">
+        <span class="comment-role">{{ 'You' if comment.role == 'human' else 'Agent' }}</span>
+        <p>{{ comment.body }}</p>
+        <span class="comment-time">{{ comment.timestamp[11:19] }}</span>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="section-empty">No PR comments yet.</div>
+    {% endif %}
+</div>

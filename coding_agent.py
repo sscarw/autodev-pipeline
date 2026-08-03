@@ -1,7 +1,8 @@
-from models import Ticket
-from claude_agent_sdk import query, ClaudeAgentOptions
-from github_client import _resolve_path
+from claude_agent_sdk import ClaudeAgentOptions, query
 from dotenv import load_dotenv
+
+from github_client import _resolve_path
+from models import Ticket
 
 load_dotenv()
 

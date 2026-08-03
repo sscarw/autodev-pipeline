@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+    <h1>Pipeline Dashboard</h1>
+    <span class="live-indicator"><span class="live-dot"></span> LIVE</span>
+</div>
+
+{% if needs_setup %}
+<div class="banner banner-info">
+    Jira and/or GitHub aren't fully configured yet — <a href="/settings">finish setup in Settings</a> to see live tickets here.
+</div>
+{% endif %}
+
+<div class="board-wrap" id="board-wrap">
+    {% include "_board.html" %}
+</div>
+
+<div class="detail-overlay" id="detail-overlay" onclick="closeTicket(event)">
+    <div class="detail-panel" id="detail-panel" onclick="event.stopPropagation()">
+        <div class="detail-loading">Loading...</div>
+    </div>
+</div>
+{% endblock %}
